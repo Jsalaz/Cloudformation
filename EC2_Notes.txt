@@ -1,0 +1,40 @@
+AWS EC2 RUN-INSTANCES
+
+regular ez
+aws ec2 run-instances --image-id ami-55ef662f --count 1 --instance-type t2.micro --key-name organize-jhs --iam-instance-profile Name=S3-Admin-Access --security-group-ids sg-52b20e27 --subnet-id subnet-1ad18426
+
+with instance profile
+aws ec2 run-instances --iam-instance-profile Name=MyInstanceProfile --image-id ami-1a2b3c4d --count 1 --instance-type t2.micro --key-name organize-jhs --security-groups SSH-only --subnet-id subnet-1ad18426
+
+with tags
+aws ec2 run-instances --image-id ami-55ef662f --count 1 --instance-type t2.micro --key-name organize-jhs --iam-instance-profile Name=S3-Admin-Access --security-group-ids sg-52b20e27 --subnet-id subnet-1ad18426 --tag-specifications 'ResourceType=instance,Tags=[{Key=webserver,Value=production},{Key=Name,Value=CLI_Made}]' 'ResourceType=volume,Tags=[{Key=cost-center,Value=cc123}]'
+
+Administration Ec2
+aws ec2 run-instances --image-id ami-55ef662f --count 1 --instance-type t2.micro --key-name organize-jhs --iam-instance-profile Name=MyEC2-Admin --security-group-ids sg-52b20e27 --subnet-id subnet-1ad18426 --tag-specifications 'ResourceType=instance,Tags=[{Key=webserver,Value=production},{Key=Name,Value=EC2_Admin}]' 'ResourceType=volume,Tags=[{Key=cost-center,Value=cc123}]'
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+AWS EC2 TERMINATE-INSTANCES
+
+aws ec2 terminate-instances --instance-ids i-xxxxxxxx
+####################################################
+########~~ Quick Script to terminate ALL instances
+#!/bin/bash
+
+#fetches all current instances
+INSTANCES=`aws ec2 describe-instances |grep "InstanceId" | cut -d "\"" -f 4`
+
+#Terminates ALL instances
+aws ec2 terminate-instances --instance-ids $INSTANCES
+
+##############################################
+#######~~ Terminate all but current instance
+#!/bin/bash
+
+#Fetches current instance
+MY_INSTANCE=`curl http://169.254.169.254/latest/meta-data/instance-id`
+
+#fetches all current instances except $MY_INSTANCE
+INSTANCES=`aws ec2 describe-instances |grep -v $MY_INSTANCE |grep "InstanceId" | cut -d "\"" -f 4`
+
+#Terminates ALL instances
+aws ec2 terminate-instances --instance-ids $INSTANCES

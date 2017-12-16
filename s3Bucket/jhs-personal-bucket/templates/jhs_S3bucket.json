@@ -1,0 +1,65 @@
+{
+    "Description": "This is an test of how to create an S3 bucket with Cloudformation I will try to make adding policies functions for lifeCycle policies Date 10-27-2017",
+    "Outputs": {
+        "DirectOutput": {
+            "Description": "This is an alternative form of adding outputs",
+            "Value": {
+                "Fn::Join": [
+                    "",
+                    [
+                        "BucketName is ",
+                        {
+                            "Ref": "BucketName"
+                        },
+                        " On S3"
+                    ]
+                ]
+            }
+        },
+        "JHSBucketName": {
+            "Description": "This is the name of personal bucket",
+            "Value": {
+                "Ref": "BucketName"
+            }
+        }
+    },
+    "Parameters": {
+        "BucketName": {
+            "Default": "jhs-personal-bucket",
+            "Description": "My s3 Bucket Name",
+            "Type": "String"
+        }
+    },
+    "Resources": {
+        "JHSBucket": {
+            "Properties": {
+                "BucketName": {
+                    "Ref": "BucketName"
+                },
+                "LifecycleConfiguration": {
+                    "Rules": [
+                        {
+                            "ExpirationInDays": "3650",
+                            "Id": "Christina",
+                            "Prefix": "/Christina/Pics",
+                            "Status": "Enabled"
+                        },
+                        {
+                            "ExpirationInDays": "3650",
+                            "Id": "Jorge",
+                            "Prefix": "/Jorge/Pics",
+                            "Status": "Enabled"
+                        },
+                        {
+                            "ExpirationInDays": "3650",
+                            "Id": "Hazel",
+                            "Prefix": "/Hazel/Pics",
+                            "Status": "Enabled"
+                        }
+                    ]
+                }
+            },
+            "Type": "AWS::S3::Bucket"
+        }
+    }
+}
